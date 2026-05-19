@@ -21,7 +21,9 @@ This website was created with the intent of making it easy to practice Vim keybi
 
 Select a test to begin. Locate and delete the specified line using `dd` to start the test. If you need to exit early, use `:q`. Follow the instructions and complete each test using Vim motions!
 
-New in this fork: select `lazy.nvim` to practice cleaning Lazy.nvim plugin specs. Search for `DELETE_ME` with `/DELETE_ME`, then delete the line with `dd`.
+New in this fork: select `lazy.nvim` to practice cleaning Lazy.nvim plugin specs. Search for `delete-me` with `/delete-me`, then delete the highlighted line with `dd`.
+
+Also select `substitute` to practice the high-leverage refactor command `:%s/old/new/g`: all targets are highlighted so you learn to search/replace fast without hunting manually.
 
 ## Setup / Development
 

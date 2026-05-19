@@ -40,25 +40,27 @@ const lazyPluginSpecs = [
 ];
 
 const lazyDistractors = [
-	"\t-- DELETE_ME: remove this fake option before the spec is valid",
-	'\t\tenabled = false, -- DELETE_ME',
-	'\t\tcond = false, -- DELETE_ME',
-	'\t\t-- DELETE_ME: this line breaks the clean Lazy.nvim spec'
+	"\t-- delete-me: remove this fake option before the spec is valid",
+	'\t\tenabled = false, -- delete-me',
+	'\t\tcond = false, -- delete-me',
+	'\t\t-- delete-me: this line breaks the clean Lazy.nvim spec'
 ];
 
 export const lazyTest: LazyTest = {
 	type: TestType.LAZY,
 	targetLine: lazyDistractors[0],
 	targetPosition: 0,
-	prompt: "Clean a Lazy.nvim plugin spec by deleting the DELETE_ME line.",
-	tip: "Tip: search DELETE_ME with /DELETE_ME, then use dd to delete the whole line.",
+	prompt: "Clean a Lazy.nvim plugin spec by deleting the highlighted delete-me line.",
+	tip: "Tip: search delete-me with /delete-me, then use dd to delete the whole highlighted line.",
+	highlightToken: "delete-me",
+	highlightLine: true,
 	textBuffer: lazyPluginSpecs[0],
 	joinCharacter: "\n",
 	condition: (currentBuffer: string) => {
 		if (currentBuffer.length === 0) return false;
 		if (lazyTest.type !== TestType.LAZY) return false;
 
-		return !currentBuffer.includes("DELETE_ME") && currentBuffer.includes("return {");
+		return !currentBuffer.includes("delete-me") && currentBuffer.includes("return {");
 	},
 	updateBuffer: () => {
 		if (lazyTest.type !== TestType.LAZY) return;

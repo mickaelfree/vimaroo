@@ -36,7 +36,36 @@
 
 	let asciiLogo = enableAsciiLogoOptions[$asciiLogoEnabled] === "Yes" ? ASCII_LOGO : "";
 	let vimMode: any;
+	let targetDecorations: string[] = [];
 	let loaded: boolean = false;
+
+	const updateTargetHighlights = () => {
+		if (!editor || !monaco) return;
+
+		const model = editor.getModel();
+		if (!model || !test.highlightToken) {
+			targetDecorations = editor.deltaDecorations(targetDecorations, []);
+			return;
+		}
+
+		const matches = model.findMatches(test.highlightToken, false, false, true, null, true);
+		const decorations = matches.map((match) => ({
+			range: test.highlightLine
+				? new monaco.Range(match.range.startLineNumber, 1, match.range.startLineNumber, 1)
+				: match.range,
+			options: test.highlightLine
+				? {
+						isWholeLine: true,
+						className: "target-delete-line",
+						glyphMarginClassName: "target-delete-glyph"
+					}
+				: {
+						inlineClassName: "target-replace-token"
+					}
+		}));
+
+		targetDecorations = editor.deltaDecorations(targetDecorations, decorations);
+	};
 
 	onMount(async () => {
 		// Import monaco code editor
@@ -105,6 +134,7 @@
 				test.updateBuffer();
 				triggeredByEditor = true;
 				editor.setValue(test.textBuffer.join(test.joinCharacter));
+				updateTargetHighlights();
 			};
 
 			// Helper function to reset timer, rounds, and scores
@@ -222,3 +252,24 @@
 	></p>
 	<p class="text-sm">Tip: You can reset tests by using :q</p>
 </div>
+
+<style>
+	:global(.target-delete-line) {
+		background: linear-gradient(90deg, rgba(239, 68, 68, 0.32), rgba(251, 191, 36, 0.16));
+		border-left: 3px solid rgb(248, 113, 113);
+	}
+
+	:global(.target-delete-glyph) {
+		background: rgb(248, 113, 113);
+		border-radius: 999px;
+		margin-left: 4px;
+		width: 8px !important;
+	}
+
+	:global(.target-replace-token) {
+		background: rgba(34, 211, 238, 0.32);
+		border: 1px solid rgba(103, 232, 249, 0.85);
+		border-radius: 4px;
+		box-shadow: 0 0 12px rgba(34, 211, 238, 0.28);
+	}
+</style>

@@ -5,6 +5,7 @@ import { containersTest } from "./containers";
 import { linesTest } from "./lines";
 import { movementTest } from "./movement";
 import { lazyTest } from "./lazy";
+import { substituteTest } from "./substitute";
 import { mixedTest } from "./mixed";
 
 export function handleTestModeChange(testMode: string): Test {
@@ -19,6 +20,8 @@ export function handleTestModeChange(testMode: string): Test {
 			return movementTest;
 		case TestType.LAZY:
 			return lazyTest;
+		case TestType.SUBSTITUTE:
+			return substituteTest;
 		case TestType.MIXED:
 			return mixedTest;
 	}

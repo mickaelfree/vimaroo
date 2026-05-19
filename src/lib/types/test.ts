@@ -9,12 +9,15 @@ enum TestType {
 	LINES = "lines",
 	MOVEMENT = "movement",
 	LAZY = "lazy.nvim",
+	SUBSTITUTE = "substitute",
 	MIXED = "mixed"
 }
 
 type BaseTest = {
 	prompt: string;
 	tip?: string;
+	highlightToken?: string;
+	highlightLine?: boolean;
 	textBuffer: string[];
 	joinCharacter: string;
 	condition: (currentBuffer: string) => boolean;
@@ -51,6 +54,13 @@ interface LazyTest extends BaseTest {
 	targetPosition: number;
 }
 
+interface SubstituteTest extends BaseTest {
+	type: TestType.SUBSTITUTE;
+	searchText: string;
+	replaceText: string;
+	expectedMatches: number;
+}
+
 interface MixedTest extends BaseTest {
 	type: TestType.MIXED;
 	targetLine: string;
@@ -60,7 +70,14 @@ interface MixedTest extends BaseTest {
 	targetPosition: number;
 }
 
-type Test = HorizontalTest | ContainersTest | LinesTest | MovementTest | LazyTest | MixedTest;
+type Test =
+	| HorizontalTest
+	| ContainersTest
+	| LinesTest
+	| MovementTest
+	| LazyTest
+	| SubstituteTest
+	| MixedTest;
 
 export { TestType };
 export type {
@@ -71,6 +88,7 @@ export type {
 	LinesTest,
 	MovementTest,
 	LazyTest,
+	SubstituteTest,
 	MixedTest,
 	Test
 };
