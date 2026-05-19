@@ -123,7 +123,14 @@
 
 	<div class="h-[400px] w-[min(1000px,90vw)]">
 		{#key [testMode, typeMode, testTypeAmount, $asciiLogoEnabled, $fontSize, $wordWrapEnabled, $relativeLinesEnabled]}
-			<Editor {test} {testMode} testType={typeMode} {testTypeAmount} session={data.session} />
+			<Editor
+				{test}
+				{testMode}
+				testType={typeMode}
+				{testTypeAmount}
+				session={data.session}
+				on:testchange={(event) => (test = event.detail)}
+			/>
 		{/key}
 	</div>
 

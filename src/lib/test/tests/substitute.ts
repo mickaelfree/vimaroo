@@ -11,10 +11,9 @@ const substituteScenarios = [
 		]
 	},
 	{
-		searchText: "leader",
-		replaceText: "localleader",
+		searchText: "<leader>",
+		replaceText: "<localleader>",
 		buffer: [
-			'vim.g.mapleader = " "',
 			'vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>")',
 			'vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>")'
 		]
@@ -29,11 +28,12 @@ const substituteScenarios = [
 		]
 	},
 	{
-		searchText: "setup",
-		replaceText: "opts",
+		searchText: "enabled = false",
+		replaceText: "enabled = true",
 		buffer: [
-			'{ "folke/which-key.nvim", config = function() require("which-key").setup({}) end },',
-			'{ "nvim-tree/nvim-tree.lua", config = function() require("nvim-tree").setup({}) end },'
+			'{ "folke/which-key.nvim", enabled = false },',
+			'{ "nvim-tree/nvim-tree.lua", enabled = false },',
+			'{ "lewis6991/gitsigns.nvim", enabled = false },'
 		]
 	}
 ];

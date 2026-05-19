@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
-	import { onDestroy, onMount } from "svelte";
+	import { createEventDispatcher, onDestroy, onMount } from "svelte";
 	import Spinner from "./spinner.svelte";
 	import type { Test } from "$lib/types/test";
 	import { timer } from "$lib/stores/test/timer";
@@ -37,7 +37,11 @@
 	let asciiLogo = enableAsciiLogoOptions[$asciiLogoEnabled] === "Yes" ? ASCII_LOGO : "";
 	let vimMode: any;
 	let targetDecorations: string[] = [];
+	let liveSubstituteDecorations: string[] = [];
+	let statusObserver: MutationObserver;
 	let loaded: boolean = false;
+
+	const dispatch = createEventDispatcher<{ testchange: Test }>();
 
 	const updateTargetHighlights = () => {
 		if (!editor || !monaco) return;
@@ -67,6 +71,61 @@
 		targetDecorations = editor.deltaDecorations(targetDecorations, decorations);
 	};
 
+	const readLiveSubstituteSearch = () => {
+		const statusText = document.getElementById("status-bar")?.textContent?.trim() ?? "";
+		const command = statusText.startsWith(":") ? statusText : `:${statusText}`;
+		if (!command.startsWith(":%s")) return "";
+
+		const delimiter = command[3];
+		if (!delimiter) return "";
+
+		let escaped = false;
+		let search = "";
+		for (const character of command.slice(4)) {
+			if (escaped) {
+				search += character;
+				escaped = false;
+				continue;
+			}
+
+			if (character === "\\") {
+				escaped = true;
+				continue;
+			}
+
+			if (character === delimiter) break;
+			search += character;
+		}
+
+		return search;
+	};
+
+	const updateLiveSubstituteHighlights = () => {
+		if (!editor || !monaco) return;
+
+		const model = editor.getModel();
+		const liveSearch = readLiveSubstituteSearch();
+		if (!model || !liveSearch) {
+			liveSubstituteDecorations = editor.deltaDecorations(liveSubstituteDecorations, []);
+			return;
+		}
+
+		const matches = model.findMatches(liveSearch, false, false, true, null, true);
+		liveSubstituteDecorations = editor.deltaDecorations(
+			liveSubstituteDecorations,
+			matches.map((match) => ({
+				range: match.range,
+				options: {
+					inlineClassName: "live-substitute-token",
+					overviewRuler: {
+						color: "rgba(250, 204, 21, 0.9)",
+						position: monaco.editor.OverviewRulerLane.Center
+					}
+				}
+			}))
+		);
+	};
+
 	onMount(async () => {
 		// Import monaco code editor
 		const imports = (await import("$lib/editor/monaco")).default;
@@ -82,7 +141,7 @@
 
 		// Create editor & model to be displayed
 		editor = monaco.editor.create(editorContainer, {
-			value: [test.prompt, test.tip, BEGIN_TEST_LINE, asciiLogo].join("\n"),
+			value: [BEGIN_TEST_LINE, test.prompt, test.tip, asciiLogo].filter(Boolean).join("\n"),
 			minimap: { enabled: false },
 			scrollBeyondLastLine: false,
 			automaticLayout: true,
@@ -102,8 +161,14 @@
 				ambiguousCharacters: false
 			}
 		});
+		const statusBar = document.getElementById("status-bar");
+
 		// Initialize vim mode
-		vimMode = imports.initVimMode(editor, document.getElementById("status-bar"));
+		vimMode = imports.initVimMode(editor, statusBar);
+		if (statusBar) {
+			statusObserver = new MutationObserver(updateLiveSubstituteHighlights);
+			statusObserver.observe(statusBar, { childList: true, characterData: true, subtree: true });
+		}
 		// Placeholder for :q
 		(imports.VimMode as any).Vim.defineEx("quit", "q", () => {
 			return;
@@ -119,6 +184,8 @@
 		editor.focus();
 
 		editor.getModel()?.onDidChangeContent(async () => {
+			updateLiveSubstituteHighlights();
+
 			// User decides to end the test early
 			(imports.VimMode as any).Vim.defineEx("quit", "q", async () => {
 				if (!$testStarted) return;
@@ -132,9 +199,11 @@
 			// test object updateBuffer() method
 			const updateEditorContents = () => {
 				test.updateBuffer();
+				dispatch("testchange", test);
 				triggeredByEditor = true;
 				editor.setValue(test.textBuffer.join(test.joinCharacter));
 				updateTargetHighlights();
+				updateLiveSubstituteHighlights();
 			};
 
 			// Helper function to reset timer, rounds, and scores
@@ -232,6 +301,7 @@
 	});
 
 	onDestroy(() => {
+		statusObserver?.disconnect();
 		monaco?.editor.getModels().forEach((model) => model.dispose());
 		if (vimMode) vimMode.dispose();
 		editor?.dispose();
@@ -271,5 +341,15 @@
 		border: 1px solid rgba(103, 232, 249, 0.85);
 		border-radius: 4px;
 		box-shadow: 0 0 12px rgba(34, 211, 238, 0.28);
+	}
+
+	:global(.live-substitute-token) {
+		background: rgba(250, 204, 21, 0.55);
+		outline: 2px solid rgba(253, 224, 71, 0.95);
+		border-radius: 3px;
+		box-shadow:
+			0 0 0 1px rgba(0, 0, 0, 0.55),
+			0 0 16px rgba(250, 204, 21, 0.45);
+		color: #020617 !important;
 	}
 </style>
