@@ -4,12 +4,15 @@
 	import { timer } from "$lib/stores/test/timer";
 	import { rounds } from "$lib/stores/test/rounds";
 	import { scores } from "$lib/stores/test/scores";
-	import { TestType, type Test } from "$lib/types/test";
+	import { TestType, type SubstituteTest, type Test } from "$lib/types/test";
 
 	export let test: Test;
 	export let testMode: string;
 	export let testType: string;
 	export let testTypeAmount: number;
+
+	const isSubstituteTest = (value: Test): value is SubstituteTest =>
+		value.type === TestType.SUBSTITUTE && "searchText" in value && "replaceText" in value;
 
 	const missionCopy: Record<string, { name: string; goal: string; win: string; keys: string[]; xp: string }> = {
 		[TestType.HORIZONTAL]: {
@@ -64,6 +67,14 @@
 	};
 
 	$: activeMission = missionCopy[test.type] ?? missionCopy[TestType.MIXED];
+	$: isSubstitute = isSubstituteTest(test);
+	$: substituteSearch = isSubstituteTest(test) ? test.searchText : "";
+	$: substituteReplace = isSubstituteTest(test) ? test.replaceText : "";
+	$: substituteCommand = isSubstitute ? `:%s/${substituteSearch}/${substituteReplace}/g` : "";
+	$: activeGoal = isSubstitute
+		? `Remplace exactement « ${substituteSearch} » par « ${substituteReplace} » partout.`
+		: activeMission.goal;
+	$: activeKeys = isSubstitute ? [substituteCommand, "Enter"] : activeMission.keys;
 	$: [score, total] = $scores;
 	$: accuracy = total === 0 ? "100" : ((score / total) * 100).toFixed(0);
 	$: progressValue = testType === "rounds" && testTypeAmount > 0 ? Math.min(100, (total / testTypeAmount) * 100) : 0;
@@ -88,8 +99,24 @@
 				{activeMission.name}
 			</h2>
 			<p class="mt-2 text-base font-semibold text-slate-200">
-				Objectif : {activeMission.goal}
+				Objectif : {activeGoal}
 			</p>
+			{#if isSubstitute}
+				<div class="mt-3 grid gap-2 rounded-xl border border-cyan-300/25 bg-cyan-300/10 p-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+					<div>
+						<div class="text-xs font-bold uppercase tracking-widest text-cyan-300">Texte actuel</div>
+						<code class="mt-1 block rounded bg-black/35 px-3 py-2 font-mono text-lg font-black text-cyan-50">{substituteSearch}</code>
+					</div>
+					<Icon icon="mdi:arrow-right-bold" class="hidden text-cyan-200 sm:block" width={28} />
+					<div>
+						<div class="text-xs font-bold uppercase tracking-widest text-emerald-300">À remplacer par</div>
+						<code class="mt-1 block rounded bg-black/35 px-3 py-2 font-mono text-lg font-black text-emerald-100">{substituteReplace}</code>
+					</div>
+				</div>
+				<p class="mt-2 text-sm font-bold text-cyan-100">
+					Commande complète à taper : <code class="rounded bg-black/40 px-2 py-1 font-mono text-emerald-100">{substituteCommand}</code>
+				</p>
+			{/if}
 			<p class="mt-1 text-sm text-slate-400">
 				Condition de victoire : {activeMission.win}
 			</p>
@@ -137,7 +164,7 @@
 				{/if}
 			</div>
 			<div class="flex flex-wrap gap-2">
-				{#each activeMission.keys as key}
+				{#each activeKeys as key}
 					<code class="rounded-md border border-cyan-300/20 bg-cyan-300/10 px-2 py-1 font-mono text-xs text-cyan-100">{key}</code>
 				{/each}
 			</div>

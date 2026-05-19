@@ -98,6 +98,9 @@ export let mixedTest: Test = {
 				mixedTest.condition = substituteTest.condition;
 				mixedTest.highlightToken = substituteTest.highlightToken;
 				mixedTest.highlightLine = substituteTest.highlightLine;
+				(mixedTest as typeof mixedTest & { searchText: string; replaceText: string; expectedMatches: number }).searchText = substituteTest.searchText;
+				(mixedTest as typeof mixedTest & { searchText: string; replaceText: string; expectedMatches: number }).replaceText = substituteTest.replaceText;
+				(mixedTest as typeof mixedTest & { searchText: string; replaceText: string; expectedMatches: number }).expectedMatches = substituteTest.expectedMatches;
 				break;
 		}
 		mixedTest.updateBuffer = savedUpdatedBuffer;

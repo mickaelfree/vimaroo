@@ -49,8 +49,8 @@ export const substituteTest: SubstituteTest = {
 	searchText: firstScenario.searchText,
 	replaceText: firstScenario.replaceText,
 	expectedMatches: firstScenario.buffer.join("\n").split(firstScenario.searchText).length - 1,
-	prompt: `Replace every highlighted match with ${firstScenario.replaceText}.`,
-	tip: `Tip: use :%s/${firstScenario.searchText}/${firstScenario.replaceText}/g then Enter.`,
+	prompt: `Remplace « ${firstScenario.searchText} » par « ${firstScenario.replaceText} » partout dans le fichier.`,
+	tip: `Commande: :%s/${firstScenario.searchText}/${firstScenario.replaceText}/g puis Enter.`,
 	highlightToken: firstScenario.searchText,
 	highlightLine: false,
 	textBuffer: firstScenario.buffer,
@@ -71,8 +71,8 @@ export const substituteTest: SubstituteTest = {
 		substituteTest.searchText = scenario.searchText;
 		substituteTest.replaceText = scenario.replaceText;
 		substituteTest.expectedMatches = countMatches(scenario.buffer.join("\n"), scenario.searchText);
-		substituteTest.prompt = `Replace every highlighted match with ${scenario.replaceText}.`;
-		substituteTest.tip = `Tip: use :%s/${scenario.searchText}/${scenario.replaceText}/g then Enter.`;
+		substituteTest.prompt = `Remplace « ${scenario.searchText} » par « ${scenario.replaceText} » partout dans le fichier.`;
+		substituteTest.tip = `Commande: :%s/${scenario.searchText}/${scenario.replaceText}/g puis Enter.`;
 		substituteTest.highlightToken = scenario.searchText;
 		substituteTest.highlightLine = false;
 		substituteTest.textBuffer = [...scenario.buffer];
