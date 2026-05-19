@@ -13,11 +13,29 @@ enum TestType {
 	MIXED = "mixed"
 }
 
+type LearningCard = {
+	title: string;
+	body: string;
+	examples?: string[];
+};
+
+type TestLearning = {
+	title: string;
+	summary: string;
+	command: string;
+	mentalModel: string;
+	axioms: string[];
+	history?: string;
+	cards: LearningCard[];
+	transfer: string[];
+};
+
 type BaseTest = {
 	prompt: string;
 	tip?: string;
 	highlightToken?: string;
 	highlightLine?: boolean;
+	learning?: TestLearning;
 	textBuffer: string[];
 	joinCharacter: string;
 	condition: (currentBuffer: string) => boolean;
@@ -82,6 +100,8 @@ type Test =
 export { TestType };
 export type {
 	TypeMode,
+	LearningCard,
+	TestLearning,
 	BaseTest,
 	HorizontalTest,
 	ContainersTest,

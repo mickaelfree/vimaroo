@@ -22,6 +22,7 @@
 	} from "$lib/stores/settings/settings";
 	import { testOptions, modeOptions, roundOptions, timeOptions } from "$lib/test/options";
 	import Editor from "$lib/components/editor.svelte";
+	import LearningPanel from "$lib/components/learning-panel.svelte";
 	import { handleTestModeChange } from "$lib/test/tests";
 	import type { Test } from "$lib/types/test";
 	import { onDestroy, onMount } from "svelte";
@@ -140,4 +141,6 @@
 			<Editor {test} {testMode} testType={typeMode} {testTypeAmount} session={data.session} />
 		{/key}
 	</div>
+
+	<LearningPanel {test} selectedMode={testMode} />
 </section>
