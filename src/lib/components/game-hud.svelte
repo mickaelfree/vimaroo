@@ -52,7 +52,7 @@
 		},
 		[TestType.SUBSTITUTE]: {
 			name: "Refactor éclair",
-			goal: "Remplace toutes les occurrences cyan par la nouvelle valeur.",
+			goal: "Remplace toutes les occurrences surlignées en jaune par la nouvelle valeur.",
 			win: "L'ancien texte disparaît, le nouveau apparaît partout.",
 			keys: [":%s/old/new/g", "Enter"],
 			xp: "+250 XP par refactor"

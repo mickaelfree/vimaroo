@@ -73,9 +73,10 @@
 
 	const readLiveSubstituteSearch = () => {
 		const statusText = document.getElementById("status-bar")?.textContent?.trim() ?? "";
-		const command = statusText.startsWith(":") ? statusText : `:${statusText}`;
-		if (!command.startsWith(":%s")) return "";
+		const commandStart = statusText.lastIndexOf(":%s");
+		if (commandStart === -1) return "";
 
+		const command = statusText.slice(commandStart);
 		const delimiter = command[3];
 		if (!delimiter) return "";
 
@@ -182,6 +183,8 @@
 		rounds.setRounds(testTypeAmount);
 
 		editor.focus();
+		editor.setPosition({ lineNumber: 1, column: 1 });
+		updateTargetHighlights();
 
 		editor.getModel()?.onDidChangeContent(async () => {
 			updateLiveSubstituteHighlights();
@@ -214,10 +217,10 @@
 				scores.reset();
 			};
 
-			// Prompt message is displayed, start the test now
+			// Any first edit launches the mission. Do not force the cursor to be on the START line:
+			// if the player clicks the prompt and types dd, we still start the real drill instead of
+			// making them fight the onboarding text.
 			if (!$testOver && !$testStarted) {
-				if (editor.getValue().includes(BEGIN_TEST_LINE)) return;
-
 				resetTestItems();
 				$testStarted = true;
 				if (testType === "time") {
@@ -337,10 +340,10 @@
 	}
 
 	:global(.target-replace-token) {
-		background: rgba(34, 211, 238, 0.32);
-		border: 1px solid rgba(103, 232, 249, 0.85);
-		border-radius: 4px;
-		box-shadow: 0 0 12px rgba(34, 211, 238, 0.28);
+		background: rgba(250, 204, 21, 0.42);
+		outline: 1px solid rgba(253, 224, 71, 0.9);
+		border-radius: 3px;
+		box-shadow: 0 0 14px rgba(250, 204, 21, 0.38);
 	}
 
 	:global(.live-substitute-token) {
