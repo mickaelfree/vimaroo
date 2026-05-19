@@ -52,7 +52,7 @@
 		});
 
 		// Create editor & model to be displayed
-		const editor = monaco.editor.create(editorContainer, {
+		editor = monaco.editor.create(editorContainer, {
 			value: [test.prompt, test.tip, BEGIN_TEST_LINE, asciiLogo].join("\n"),
 			minimap: { enabled: false },
 			scrollBeyondLastLine: false,
@@ -76,7 +76,7 @@
 		// Initialize vim mode
 		vimMode = imports.initVimMode(editor, document.getElementById("status-bar"));
 		// Placeholder for :q
-		imports.VimMode.Vim.defineEx("quit", "q", () => {
+		(imports.VimMode as any).Vim.defineEx("quit", "q", () => {
 			return;
 		});
 
@@ -91,7 +91,7 @@
 
 		editor.getModel()?.onDidChangeContent(async () => {
 			// User decides to end the test early
-			imports.VimMode.Vim.defineEx("quit", "q", async () => {
+			(imports.VimMode as any).Vim.defineEx("quit", "q", async () => {
 				if (!$testStarted) return;
 				timer.clear();
 				testOver.set(true);
@@ -214,7 +214,7 @@
 	</div>
 {/if}
 
-<div class="h-full w-full" bind:this={editorContainer} />
+<div class="h-full w-full" bind:this={editorContainer}></div>
 <div class="flex flex-col md:flex-row md:items-center md:justify-between">
 	<p
 		class="mb-4 mt-1 max-w-max rounded-lg bg-background-400 px-2 text-foreground-blue"

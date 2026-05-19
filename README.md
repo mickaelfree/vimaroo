@@ -1,4 +1,4 @@
-# vimaroo <img src="static/favicon.svg" width="24" />
+# lazyvimaroo <img src="static/favicon.svg" width="24" />
 
 [![vimaroo website](static/vimaroo-demo.gif)](https://vimaroo.vercel.app)
 
@@ -8,13 +8,20 @@
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 ![Vim](https://img.shields.io/badge/VIM-%2311AB00.svg?style=for-the-badge&logo=vim&logoColor=white)
 
+This fork turns Vimaroo into a sharper training ground for Neovim/Lazy.nvim muscle memory.
+It keeps the original Vim motion drills and adds a Lazy.nvim mode with real-looking plugin specs to clean quickly.
+
+Original project: [tomasohCHOM/vimaroo](https://github.com/tomasohCHOM/vimaroo).
+
 ## About
 
-This website was created with the intent of making it easy to practice Vim keybinds with a set of motion-focused test. Inspired by ThePrimeagen's [vim-be-good](https://github.com/ThePrimeagen/vim-be-good) Neovim plugin and [Monkeytype](https://monkeytype.com/).
+This website was created with the intent of making it easy to practice Vim keybinds with a set of motion-focused tests. Inspired by ThePrimeagen's [vim-be-good](https://github.com/ThePrimeagen/vim-be-good) Neovim plugin and [Monkeytype](https://monkeytype.com/).
 
 ## Starting tests
 
 Select a test to begin. Locate and delete the specified line using `dd` to start the test. If you need to exit early, use `:q`. Follow the instructions and complete each test using Vim motions!
+
+New in this fork: select `lazy.nvim` to practice cleaning Lazy.nvim plugin specs. Search for `DELETE_ME` with `/DELETE_ME`, then delete the line with `dd`.
 
 ## Setup / Development
 
@@ -23,7 +30,7 @@ Create a [Supabase](https://supabase.com/) project. To store profiles and user s
 Clone the repository and install all the dependencies:
 
 ```bash
-git clone https://github.com/tomasohCHOM/vimaroo.git
+git clone https://github.com/mickaelfree/vimaroo.git
 cd vimaroo
 npm install
 ```

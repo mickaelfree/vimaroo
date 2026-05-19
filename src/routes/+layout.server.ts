@@ -51,7 +51,7 @@ export const load: LayoutServerLoad = loadFlash(
 			.single();
 
 		if (insertNewProfileQuery.error || !insertNewProfileQuery.data) {
-			error(500, { message: insertNewProfileQuery.error.message });
+			error(500, { message: insertNewProfileQuery.error?.message ?? "Failed to create profile" });
 		}
 		redirect(303, "/account/create");
 	}

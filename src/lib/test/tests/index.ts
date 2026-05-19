@@ -4,6 +4,7 @@ import { horizontalTest } from "./horizontal";
 import { containersTest } from "./containers";
 import { linesTest } from "./lines";
 import { movementTest } from "./movement";
+import { lazyTest } from "./lazy";
 import { mixedTest } from "./mixed";
 
 export function handleTestModeChange(testMode: string): Test {
@@ -16,6 +17,8 @@ export function handleTestModeChange(testMode: string): Test {
 			return linesTest;
 		case TestType.MOVEMENT:
 			return movementTest;
+		case TestType.LAZY:
+			return lazyTest;
 		case TestType.MIXED:
 			return mixedTest;
 	}

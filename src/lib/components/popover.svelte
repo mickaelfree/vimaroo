@@ -39,7 +39,7 @@
 		tabindex="-1"
 		in:fade={{ duration: 100 }}
 		out:fade={{ duration: 100 }}
-	/>
+	></div>
 {/key}
 
 <style>

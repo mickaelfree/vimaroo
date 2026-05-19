@@ -263,6 +263,8 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, safeGe
 			}
 
 			break;
+		case "lazy.nvim":
+			break;
 		default:
 			return json({ sucess: false, error: "Invalid test" }, { status: 400 });
 	}

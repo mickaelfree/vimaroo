@@ -52,10 +52,18 @@
 			</p>
 		</div>
 		<div class="flex flex-col gap-2">
+			<h3 class="text-xl font-semibold">Lazy.nvim ⚡</h3>
+			<p>
+				Clean real-looking Lazy.nvim plugin specs by deleting the <code>DELETE_ME</code> line.
+				Search with <code>/DELETE_ME</code>, jump to the result, then use <code>dd</code> to remove
+				the whole line.
+			</p>
+		</div>
+		<div class="flex flex-col gap-2">
 			<h3 class="text-xl font-semibold">Mixed 🥗</h3>
 			<p>
 				All tests combined into one! Any of the tests above will be randomly chosen for each round
-				(horizontal, containers, lines, or movement tests).
+				(horizontal, containers, lines, movement, or Lazy.nvim tests).
 			</p>
 		</div>
 	</div>

@@ -3,6 +3,7 @@ import { containersTest } from "./containers";
 import { linesTest } from "./lines";
 import { movementTest } from "./movement";
 import { horizontalTest } from "./horizontal";
+import { lazyTest } from "./lazy";
 
 export let mixedTest: Test = {
 	type: TestType.MIXED,
@@ -11,13 +12,19 @@ export let mixedTest: Test = {
 	targetCharacter: "",
 	populateCharacter: "",
 	targetPosition: 0,
-	prompt: "A combination of all other tests (words, containers, lines, movement) into one.",
+	prompt: "A combination of all other tests (words, containers, lines, movement, Lazy.nvim) into one.",
 	tip: "Tip: Good luck, it's pretty hard.",
 	textBuffer: [],
 	joinCharacter: "",
 	condition: () => false,
 	updateBuffer: () => {
-		const testTypes = [TestType.HORIZONTAL, TestType.CONTAINERS, TestType.LINES, TestType.MOVEMENT];
+		const testTypes = [
+			TestType.HORIZONTAL,
+			TestType.CONTAINERS,
+			TestType.LINES,
+			TestType.MOVEMENT,
+			TestType.LAZY
+		];
 		const randomTest = testTypes[Math.floor(Math.random() * testTypes.length)];
 		const savedUpdatedBuffer = mixedTest.updateBuffer;
 		switch (randomTest) {
@@ -64,6 +71,17 @@ export let mixedTest: Test = {
 				mixedTest.textBuffer = movementTest.textBuffer;
 				mixedTest.joinCharacter = movementTest.joinCharacter;
 				mixedTest.condition = movementTest.condition;
+				break;
+			case TestType.LAZY:
+				lazyTest.updateBuffer();
+				mixedTest.type = lazyTest.type;
+				if (mixedTest.type !== TestType.LAZY) break;
+
+				mixedTest.targetLine = lazyTest.targetLine;
+				mixedTest.targetPosition = lazyTest.targetPosition;
+				mixedTest.textBuffer = lazyTest.textBuffer;
+				mixedTest.joinCharacter = lazyTest.joinCharacter;
+				mixedTest.condition = lazyTest.condition;
 				break;
 		}
 		mixedTest.updateBuffer = savedUpdatedBuffer;

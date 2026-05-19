@@ -26,7 +26,7 @@ export async function updateStats(
 		const response = await fetch("api/stats/update", {
 			method: "POST",
 			headers: {
-				"Content-Type": "applications/json"
+				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({ testName, deletionsCorrect, deletionsTotal, totalTime })
 		});

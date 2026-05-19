@@ -8,6 +8,7 @@ enum TestType {
 	CONTAINERS = "containers",
 	LINES = "lines",
 	MOVEMENT = "movement",
+	LAZY = "lazy.nvim",
 	MIXED = "mixed"
 }
 
@@ -44,6 +45,12 @@ interface MovementTest extends BaseTest {
 	targetPosition: number;
 }
 
+interface LazyTest extends BaseTest {
+	type: TestType.LAZY;
+	targetLine: string;
+	targetPosition: number;
+}
+
 interface MixedTest extends BaseTest {
 	type: TestType.MIXED;
 	targetLine: string;
@@ -53,7 +60,7 @@ interface MixedTest extends BaseTest {
 	targetPosition: number;
 }
 
-type Test = HorizontalTest | ContainersTest | LinesTest | MovementTest | MixedTest;
+type Test = HorizontalTest | ContainersTest | LinesTest | MovementTest | LazyTest | MixedTest;
 
 export { TestType };
 export type {
@@ -63,6 +70,7 @@ export type {
 	ContainersTest,
 	LinesTest,
 	MovementTest,
+	LazyTest,
 	MixedTest,
 	Test
 };
