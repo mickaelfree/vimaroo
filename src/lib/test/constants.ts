@@ -1,4 +1,4 @@
-export const BEGIN_TEST_LINE = "Delete this line to begin the test!";
+export const BEGIN_TEST_LINE = "🎮 START: clique ici puis tape dd pour lancer la mission";
 
 export const EXTRA_WORDS = [
 	"aar",

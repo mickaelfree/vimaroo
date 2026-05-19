@@ -6,8 +6,16 @@
 	export let test: Test;
 	export let selectedMode: string;
 
+	let expanded = false;
+	let lastPanelKey = "";
+
 	$: learning = test.learning ?? learningByTestType[test.type] ?? learningByTestType[TestType.MIXED];
 	$: modeLabel = test.type === TestType.MIXED ? selectedMode : test.type;
+	$: panelKey = `${test.type}:${selectedMode}`;
+	$: if (panelKey !== lastPanelKey) {
+		lastPanelKey = panelKey;
+		expanded = false;
+	}
 </script>
 
 <section class="learning-shell w-[min(1000px,90vw)] overflow-hidden rounded-2xl border border-cyan-300/20 bg-background-600/80 shadow-2xl shadow-cyan-950/20 backdrop-blur">
@@ -25,9 +33,18 @@
 		<p class="mt-3 max-w-3xl text-sm leading-6 text-slate-300 md:text-base">
 			{learning.summary}
 		</p>
+		<button
+			type="button"
+			class="mt-4 inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-sm font-bold text-cyan-100 transition hover:border-cyan-200/60 hover:bg-cyan-300/20"
+			on:click={() => (expanded = !expanded)}
+		>
+			<Icon icon={expanded ? "mdi:chevron-up" : "mdi:book-open-page-variant"} width={18} />
+			{expanded ? "Réduire le codex" : "Ouvrir le codex: axiomes, historique, déductions"}
+		</button>
 	</div>
 
-	<div class="grid gap-4 p-5 md:grid-cols-[0.95fr_1.05fr] md:p-6">
+	{#if expanded}
+		<div class="grid gap-4 p-5 md:grid-cols-[0.95fr_1.05fr] md:p-6">
 		<div class="grid gap-4">
 			<article class="rounded-xl border border-emerald-300/20 bg-emerald-950/20 p-4">
 				<div class="mb-2 flex items-center gap-2 text-sm font-bold text-emerald-200">
@@ -90,23 +107,24 @@
 		</div>
 	</div>
 
-	<div class="grid gap-4 border-t border-white/10 p-5 md:grid-cols-3 md:p-6">
-		{#each learning.cards as card}
-			<article class="rounded-xl border border-white/10 bg-white/[0.035] p-4 transition hover:border-cyan-300/30 hover:bg-white/[0.055]">
-				<h3 class="mb-2 text-sm font-extrabold text-white">{card.title}</h3>
-				<p class="text-sm leading-6 text-slate-300">{card.body}</p>
-				{#if card.examples?.length}
-					<div class="mt-3 grid gap-2">
-						{#each card.examples as example}
-							<code class="rounded-md border border-white/10 bg-black/25 px-2 py-1 font-mono text-xs text-slate-200">
-								{example}
-							</code>
-						{/each}
-					</div>
-				{/if}
-			</article>
-		{/each}
-	</div>
+		<div class="grid gap-4 border-t border-white/10 p-5 md:grid-cols-3 md:p-6">
+			{#each learning.cards as card}
+				<article class="rounded-xl border border-white/10 bg-white/[0.035] p-4 transition hover:border-cyan-300/30 hover:bg-white/[0.055]">
+					<h3 class="mb-2 text-sm font-extrabold text-white">{card.title}</h3>
+					<p class="text-sm leading-6 text-slate-300">{card.body}</p>
+					{#if card.examples?.length}
+						<div class="mt-3 grid gap-2">
+							{#each card.examples as example}
+								<code class="rounded-md border border-white/10 bg-black/25 px-2 py-1 font-mono text-xs text-slate-200">
+									{example}
+								</code>
+							{/each}
+						</div>
+					{/if}
+				</article>
+			{/each}
+		</div>
+	{/if}
 </section>
 
 <style>

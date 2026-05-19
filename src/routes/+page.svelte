@@ -1,9 +1,6 @@
 <script lang="ts">
 	import TestSettings from "$lib/components/test-settings.svelte";
 	import { testOver, testStarted } from "$lib/stores/test/status";
-	import { timer } from "$lib/stores/test/timer";
-	import { rounds } from "$lib/stores/test/rounds";
-	import { scores } from "$lib/stores/test/scores";
 	import {
 		TEST_INDEX_KEY,
 		MODE_INDEX_KEY,
@@ -22,6 +19,7 @@
 	} from "$lib/stores/settings/settings";
 	import { testOptions, modeOptions, roundOptions, timeOptions } from "$lib/test/options";
 	import Editor from "$lib/components/editor.svelte";
+	import GameHud from "$lib/components/game-hud.svelte";
 	import LearningPanel from "$lib/components/learning-panel.svelte";
 	import { handleTestModeChange } from "$lib/test/tests";
 	import type { Test } from "$lib/types/test";
@@ -119,22 +117,9 @@
 				<TestSettings />
 			</div>
 		{/if}
-	{:else}
-		<div class="flex items-center justify-between p-2">
-			{#if ["time", "rounds"].includes(modeOptions[$selectedModeIndex])}
-				<span class="font-semibold text-foreground-blue">
-					{#if modeOptions[$selectedModeIndex] === "time"}
-						{$timer}
-					{:else}
-						{$rounds}
-					{/if}
-				</span>
-				<span class="font-semibold">
-					{$scores[0]} / {$scores[1]}
-				</span>
-			{/if}
-		</div>
 	{/if}
+
+	<GameHud {test} {testMode} testType={typeMode} {testTypeAmount} />
 
 	<div class="h-[400px] w-[min(1000px,90vw)]">
 		{#key [testMode, typeMode, testTypeAmount, $asciiLogoEnabled, $fontSize, $wordWrapEnabled, $relativeLinesEnabled]}
